@@ -1,0 +1,236 @@
+<title>การ์ดง้อน้องแทม</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@300;400;600&family=Pridi:wght@400;600&display=swap">
+<style>
+/* Layout: a greeting card in the middle of a soft pink page. The cover swings open to an apology; the "forgiven" button raises a second popup card with the love note. */
+:root {
+  --bg: #fff0f5;
+  --bg-2: #ffd9e6;
+  --paper: #fffafc;
+  --ink: #5a2a43;
+  --ink-soft: #8d5a74;
+  --rose: #ec6a96;
+  --rose-deep: #c9437a;
+  --lilac: #cdb8f0;
+  --cover-a: #f7a6c3;
+  --cover-b: #ec6a96;
+  --line: rgba(236, 106, 150, .16);
+  --font-display: "Pridi", "Noto Serif Thai", Georgia, serif;
+  --font-body: "Mali", "Noto Sans Thai", "Sarabun", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0; color: var(--ink); font-family: var(--font-body); overflow-x: hidden;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%) var(--bg-2); background-attachment: fixed;
+  padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main { position: relative; z-index: 2; max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 18px; padding-top: clamp(16px, 6vh, 64px); }
+
+.decor, .hearts { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.decor { z-index: 0; }
+.hearts { z-index: 90; }
+.flower { position: absolute; animation: spin 90s linear infinite; }
+.f1 { width: 170px; top: -56px; left: -56px; color: #f6a3c0; }
+.f2 { width: 130px; top: -30px; right: -40px; color: #fff; opacity: .9; animation-direction: reverse; }
+.f3 { width: 150px; bottom: -48px; left: -36px; color: #fff; opacity: .9; }
+.f4 { width: 190px; bottom: -64px; right: -56px; color: var(--lilac); animation-direction: reverse; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.heart { position: fixed; line-height: 1; will-change: transform, opacity; }
+
+.hint { margin: 0; text-align: center; font-weight: 600; color: var(--rose-deep); }
+.hint small { display: block; font-weight: 400; font-size: .82rem; color: var(--ink-soft); }
+
+/* Card */
+.card { position: relative; width: min(88vw, 360px); min-height: 500px; perspective: 1200px; }
+.inside {
+  position: relative; min-height: 500px; padding: 34px 26px 28px; border-radius: 10px;
+  background: var(--paper) repeating-linear-gradient(to bottom, transparent 0, transparent 35px, var(--line) 35px, var(--line) 36px);
+  box-shadow: 0 16px 34px rgba(201, 67, 122, .28); display: flex; flex-direction: column;
+}
+.inside h1 { margin: 0 0 16px; font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; line-height: 1.4; color: var(--rose-deep); }
+.inside p { margin: 0 0 12px; font-size: 1.02rem; line-height: 36px; }
+.line { opacity: 0; transform: translateY(10px); }
+.card.open .line { animation: lineIn .7s ease forwards; animation-delay: calc(var(--i) * .75s + .9s); }
+@keyframes lineIn { to { opacity: 1; transform: none; } }
+
+.cover {
+  position: absolute; inset: 0; z-index: 3; border-radius: 10px; border: 0; padding: 0; cursor: pointer; font: inherit; color: #fff;
+  transform-origin: left center; transition: transform 1s cubic-bezier(.5, .1, .2, 1), opacity .5s ease .6s;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.35) 0 14%, transparent 15%),
+    radial-gradient(circle at 85% 88%, rgba(255,255,255,.28) 0 18%, transparent 19%),
+    linear-gradient(150deg, var(--cover-a), var(--cover-b));
+  box-shadow: 0 16px 34px rgba(201, 67, 122, .35); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+.cover .to { font-size: .95rem; letter-spacing: .06em; opacity: .9; }
+.cover .name { font-family: var(--font-display); font-weight: 600; font-size: 2rem; line-height: 1.3; text-shadow: 0 2px 8px rgba(160, 47, 92, .35); }
+.cover .big { font-size: 3.2rem; line-height: 1; margin: 6px 0; animation: beat 1.4s ease-in-out infinite; }
+.cover .tap { font-size: .85rem; opacity: .95; background: rgba(255,255,255,.22); padding: 6px 14px; border-radius: 999px; }
+@keyframes beat { 50% { transform: scale(1.14); } }
+.card.open .cover { transform: rotateY(-105deg); opacity: 0; pointer-events: none; }
+.cover:focus-visible, .btn:focus-visible, .close:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+
+.actions { position: relative; margin-top: auto; padding-top: 18px; min-height: 130px; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; pointer-events: none; }
+.card.open .actions { animation: lineIn .7s ease forwards; animation-delay: 4.9s; pointer-events: auto; }
+.btn {
+  border: 0; cursor: pointer; font: inherit; font-weight: 600; font-size: 1.02rem; border-radius: 999px; padding: 12px 24px;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.btn.yes { color: #fff; background: linear-gradient(135deg, #f48fb4, var(--rose-deep)); box-shadow: 0 8px 18px rgba(201, 67, 122, .4); animation: pulse 2s ease-in-out infinite; }
+.btn.no { color: var(--ink-soft); background: #f3e6ee; transition: transform .25s cubic-bezier(.3, 1.4, .5, 1); position: relative; z-index: 4; }
+@keyframes pulse { 50% { transform: scale(1.05); } }
+
+/* Popup love card */
+.modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px)); background: rgba(90, 42, 67, .5); }
+.modal[hidden] { display: none; }
+.love {
+  position: relative; width: min(92vw, 360px); max-height: 92vh; overflow: auto; text-align: center; border-radius: 14px; padding: 36px 26px 28px;
+  background: linear-gradient(165deg, #fffafc 0%, #ffe3ee 100%); border: 2px solid #f7b4cb; box-shadow: 0 24px 50px rgba(90, 42, 67, .4);
+  animation: pop .6s cubic-bezier(.3, 1.5, .5, 1) both;
+}
+@keyframes pop { from { opacity: 0; transform: scale(.6) rotate(-4deg); } to { opacity: 1; transform: none; } }
+.love .seal { font-size: 2.6rem; line-height: 1; animation: beat 1.4s ease-in-out infinite; }
+.love h2 { margin: 10px 0 12px; font-family: var(--font-display); font-weight: 600; font-size: 1.4rem; color: var(--rose-deep); line-height: 1.4; }
+.love p { margin: 0 0 10px; font-size: 1.05rem; line-height: 1.9; }
+.love .sig { margin-top: 14px; font-family: var(--font-display); font-weight: 600; color: var(--rose-deep); font-size: 1.15rem; }
+.close { margin-top: 18px; }
+.love .btn.yes { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .flower, .cover .big, .love .seal, .btn.yes { animation: none !important; }
+  .card.open .line, .card.open .actions { animation-duration: .01s !important; animation-delay: 0s !important; }
+  .cover { transition-duration: .01s !important; transition-delay: 0s !important; }
+  .hearts { display: none; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="flower" viewBox="0 0 100 100">
+    <g fill="currentColor">
+      <ellipse cx="50" cy="26" rx="15" ry="24"/>
+      <ellipse cx="50" cy="26" rx="15" ry="24" transform="rotate(72 50 50)"/>
+      <ellipse cx="50" cy="26" rx="15" ry="24" transform="rotate(144 50 50)"/>
+      <ellipse cx="50" cy="26" rx="15" ry="24" transform="rotate(216 50 50)"/>
+      <ellipse cx="50" cy="26" rx="15" ry="24" transform="rotate(288 50 50)"/>
+    </g>
+    <circle cx="50" cy="50" r="10" fill="#f3c969"/>
+  </symbol>
+</svg>
+<div class="decor" aria-hidden="true">
+  <svg class="flower f1" viewBox="0 0 100 100"><use href="#flower" width="100" height="100"/></svg>
+  <svg class="flower f2" viewBox="0 0 100 100"><use href="#flower" width="100" height="100"/></svg>
+  <svg class="flower f3" viewBox="0 0 100 100"><use href="#flower" width="100" height="100"/></svg>
+  <svg class="flower f4" viewBox="0 0 100 100"><use href="#flower" width="100" height="100"/></svg>
+</div>
+<div class="hearts" id="hearts" aria-hidden="true"></div>
+
+<main>
+  <p class="hint" id="hint">💌 มีการ์ดถึงน้องแทม<small>แตะการ์ดเพื่อเปิดอ่านนะ</small></p>
+
+  <div class="card" id="card">
+    <section class="inside" aria-live="polite">
+      <h1 class="line" style="--i:0">น้องแทมที่รัก 🥺</h1>
+      <p class="line" style="--i:1">เค้าขอโทษนะ ที่ทำให้เธอเสียใจ</p>
+      <p class="line" style="--i:2">เค้านั่งคิดอยู่นานเลยว่าจะพูดยังไงให้เธอหายงอน สุดท้ายก็คิดออกแค่ว่า เค้าไม่อยากให้เธอเงียบใส่เค้าเลย</p>
+      <p class="line" style="--i:3">เค้าจะตั้งใจฟังเธอให้มากกว่านี้ นะที่รัก</p>
+      <p class="line" style="--i:4">หายงอนเค้าได้มั้ยยย 🫶🏻</p>
+      <div class="actions" id="actions">
+        <button class="btn yes" id="yes" type="button">หายงอนแล้ว 💗</button>
+        <button class="btn no" id="no" type="button">ยังงอนอยู่ 😤</button>
+      </div>
+    </section>
+    <button class="cover" id="cover" type="button" aria-label="เปิดการ์ด">
+      <span class="to">ถึง</span>
+      <span class="name">น้องแทม</span>
+      <span class="big" aria-hidden="true">🧸</span>
+      <span class="tap">แตะเพื่อเปิด</span>
+    </button>
+  </div>
+</main>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="loveTitle">
+  <div class="love">
+    <div class="seal" aria-hidden="true">💌</div>
+    <h2 id="loveTitle">ถึงที่รักของเค้า</h2>
+    <p>เค้ารักเธอนะ น้องแทม</p>
+    <p>ขอบคุณที่ยังอยู่ตรงนี้กับเค้า ขอบคุณที่ใจดีกับเค้าเสมอ ต่อให้วันไหนเค้าทำให้เธอหงุดหงิด เธอก็ยังเป็นคนสำคัญที่สุดของเค้าอยู่ดี</p>
+    <p>ต่อไปนี้เค้าจะรักเธอให้เก่งขึ้นอีกเยอะเลย 💕</p>
+    <div class="sig">รักเธอที่สุด 🫶🏻</div>
+    <button class="btn yes close" id="close" type="button">เก็บไว้ในใจ 💗</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var card = $('card'), cover = $('cover'), hint = $('hint'), yes = $('yes'), no = $('no');
+  var modal = $('modal'), closeBtn = $('close'), hearts = $('hearts');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var tries = 0, lastFocus = null;
+  var lines = ['ยังงอนอยู่ 😤', 'จับให้ได้สิ 😝', 'ยังไม่หายยย 🙈', 'เกือบแล้ว 🥹'];
+
+  function floatHearts(origin, n, power) {
+    if (reduce) return;
+    var r = origin.getBoundingClientRect();
+    var ox = r.left + r.width / 2, oy = r.top + r.height / 2;
+    var glyphs = ['💗', '💖', '💕', '💓', '🧸', '♥'];
+    for (var i = 0; i < n; i++) {
+      var h = document.createElement('span');
+      h.className = 'heart';
+      h.textContent = glyphs[(Math.random() * glyphs.length) | 0];
+      h.style.fontSize = (14 + Math.random() * 20) + 'px';
+      h.style.left = ox + 'px'; h.style.top = oy + 'px';
+      hearts.appendChild(h);
+      var dx = (Math.random() - .5) * 280 * power;
+      var rise = 200 + Math.random() * 300 * power;
+      var a = h.animate([
+        { transform: 'translate(-50%,-50%) scale(.3)', opacity: 0 },
+        { opacity: 1, offset: .15 },
+        { transform: 'translate(calc(-50% + ' + dx + 'px),calc(-50% - ' + rise + 'px)) scale(1.1) rotate(' + ((Math.random() - .5) * 50) + 'deg)', opacity: 0 }
+      ], { duration: 2200 + Math.random() * 2000, delay: Math.random() * 500, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'backwards' });
+      a.onfinish = (function (el) { return function () { el.remove(); }; })(h);
+    }
+  }
+
+  cover.addEventListener('click', function () {
+    card.classList.add('open');
+    cover.tabIndex = -1;
+    hint.hidden = true;
+    floatHearts(cover, 16, 1);
+  });
+
+  function openModal() {
+    lastFocus = document.activeElement;
+    modal.hidden = false;
+    closeBtn.focus();
+    floatHearts(yes, 36, 1.6);
+  }
+  function closeModal() {
+    modal.hidden = true;
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  yes.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', function () { floatHearts(closeBtn, 18, 1.2); closeModal(); });
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+
+  /* The "still sulking" button dodges, then gives in on the fifth try. */
+  function dodge(e) {
+    e.preventDefault();
+    tries++;
+    if (tries > 4) { no.style.transform = 'none'; no.textContent = 'ก็ได้ หายงอนแล้ว 💗'; openModal(); tries = 0; setTimeout(function () { no.textContent = lines[0]; }, 400); return; }
+    var dx = (Math.random() - .5) * 150, dy = (Math.random() - .5) * 70 - 10;
+    no.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(' + ((Math.random() - .5) * 18) + 'deg)';
+    no.textContent = lines[tries % lines.length];
+  }
+  no.addEventListener('pointerdown', dodge);
+  no.addEventListener('click', function (e) { e.preventDefault(); });
+  no.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') dodge(e); });
+})();
+</script>
